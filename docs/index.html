@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sileo — Demo</title>
+
+  <!-- Prevent flash of wrong theme -->
+  <script>
+    (function() {
+      var s = localStorage.getItem('sileo-demo-theme');
+      var t = s || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hamada147/sileo-vanilla/dist/styles.css" />
+
+  <style>
+    /* ═══════════════════════════ RESET ═══════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ═══════════════════════════ THEME ═══════════════════════════ */
+    :root {
+      --success: oklch(0.723 0.219 142.136);
+      --error: oklch(0.637 0.237 25.331);
+      --warning: oklch(0.795 0.184 86.047);
+      --info: oklch(0.685 0.169 237.323);
+      --action: oklch(0.623 0.214 259.815);
+      --loading: oklch(0.556 0 0);
+    }
+
+    :root,
+    [data-theme="light"] {
+      --bg: #F7F5F0;
+      --bg-raised: #FFFFFF;
+      --border: rgba(0, 0, 0, 0.07);
+      --border-hover: rgba(0, 0, 0, 0.15);
+      --text-1: #111111;
+      --text-2: #636363;
+      --text-3: #9E9E9E;
+      --shadow-hover: 0 4px 16px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.03);
+      --hero-from: #1A1A1A;
+      --hero-to: #555;
+      --toggle-bg: rgba(0,0,0,0.05);
+      --toggle-bg-hover: rgba(0,0,0,0.09);
+      --screen-bg: rgba(0,0,0,0.025);
+      --screen-border: rgba(0,0,0,0.1);
+      --code-bg: rgba(0,0,0,0.04);
+      --nav-bg: rgba(247, 245, 240, 0.82);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0A0A0A;
+      --bg-raised: #141414;
+      --border: rgba(255, 255, 255, 0.055);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --text-1: #E8E4DE;
+      --text-2: #888;
+      --text-3: #555;
+      --shadow-hover: 0 4px 16px rgba(0,0,0,0.25), 0 8px 32px rgba(0,0,0,0.2);
+      --hero-from: #F5E6C8;
+      --hero-to: #D8D4CE;
+      --toggle-bg: rgba(255,255,255,0.055);
+      --toggle-bg-hover: rgba(255,255,255,0.1);
+      --screen-bg: rgba(255,255,255,0.02);
+      --screen-border: rgba(255,255,255,0.07);
+      --code-bg: rgba(255,255,255,0.04);
+      --nav-bg: rgba(10, 10, 10, 0.82);
+    }
+
+    /* ═══════════════════════════ BASE ═══════════════════════════ */
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      background: var(--bg);
+      color: var(--text-1);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.45s ease, color 0.45s ease;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ═══════════════════════════ NAV ═══════════════════════════ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--text-1);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-clear {
+      font-family: inherit;
+      font-size: 0.675rem;
+      font-weight: 400;
+      color: var(--text-3);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-clear:hover {
+      color: var(--text-2);
+      border-color: var(--border-hover);
+    }
+
+    /* ═══════════════════════════ THEME TOGGLE ═══════════════════════════ */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--toggle-bg);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--toggle-bg-hover);
+      color: var(--text-1);
+    }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .theme-toggle .icon-sun  { display: block; }
+    .theme-toggle .icon-moon { display: none; }
+    [data-theme="dark"] .theme-toggle .icon-sun  { display: none; }
+    [data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+    /* ═══════════════════════════ HERO ═══════════════════════════ */
+    .hero {
+      padding: 6rem 0 4.5rem;
+    }
+
+    .hero-title {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(4.5rem, 11vw, 9rem);
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: -0.035em;
+      background: linear-gradient(140deg, var(--hero-from), var(--hero-to));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s ease both;
+      animation-delay: 80ms;
+    }
+
+    .hero-sub {
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--text-2);
+      max-width: 400px;
+      line-height: 1.75;
+      animation: fadeUp 0.6s ease both;
+      animation-delay: 220ms;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2.25rem;
+      font-size: 0.625rem;
+      font-weight: 400;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      animation: fadeUp 0.6s ease both;
+      animation-delay: 340ms;
+    }
+
+    .hero-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--text-3);
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════ SECTIONS ═══════════════════════════ */
+    .section {
+      padding: 2.75rem 0;
+    }
+
+    .section + .section {
+      border-top: 1px solid var(--border);
+    }
+
+    .section-head {
+      margin-bottom: 1.75rem;
+    }
+
+    .section-num {
+      font-size: 0.575rem;
+      font-weight: 500;
+      color: var(--text-3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: var(--text-1);
+    }
+
+    .section-desc {
+      font-size: 0.72rem;
+      font-weight: 300;
+      color: var(--text-2);
+      margin-top: 0.4rem;
+      line-height: 1.65;
+    }
+
+    /* ═══════════════════════════ GRIDS ═══════════════════════════ */
+    .grid { display: grid; gap: 0.875rem; }
+    .grid-states { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+    .grid-wide   { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .grid-pos    { grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); }
+
+    /* ═══════════════════════════ CARDS ═══════════════════════════ */
+    .card {
+      --card-accent: var(--text-3);
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      animation: fadeUp 0.5s ease both;
+      animation-delay: calc(var(--i, 0) * 55ms + 250ms);
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .card:active {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--card-accent);
+      transition: box-shadow 0.25s ease;
+    }
+
+    .card:hover .card-dot {
+      box-shadow: 0 0 0 3px color-mix(in oklch, var(--card-accent) 22%, transparent);
+    }
+
+    .card-name {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 0.675rem;
+      font-weight: 300;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+
+    /* Accent color per state */
+    .card[data-accent="success"] { --card-accent: var(--success); }
+    .card[data-accent="error"]   { --card-accent: var(--error); }
+    .card[data-accent="warning"] { --card-accent: var(--warning); }
+    .card[data-accent="info"]    { --card-accent: var(--info); }
+    .card[data-accent="action"]  { --card-accent: var(--action); }
+    .card[data-accent="loading"] { --card-accent: var(--loading); }
+
+    /* ═══════════════════════════ ASYNC FLOW BADGES ═══════════════════════════ */
+    .card-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.6rem;
+      font-weight: 400;
+      color: var(--text-3);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    .card-flow .tag {
+      padding: 0.12rem 0.4rem;
+      border-radius: 4px;
+      background: var(--code-bg);
+    }
+
+    .card-flow .arrow { opacity: 0.5; }
+
+    /* ═══════════════════════════ POSITION CARDS ═══════════════════════════ */
+    .pos-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 0.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      user-select: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      animation: fadeUp 0.5s ease both;
+      animation-delay: calc(var(--i, 0) * 55ms + 250ms);
+    }
+
+    .pos-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .pos-card:active {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    .pos-screen {
+      width: 54px;
+      height: 38px;
+      border: 1.5px solid var(--screen-border);
+      border-radius: 4px;
+      background: var(--screen-bg);
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .pos-card:hover .pos-screen {
+      border-color: var(--border-hover);
+    }
+
+    .pos-dot {
+      position: absolute;
+      width: 14px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--info);
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .pos-card:hover .pos-dot {
+      background: var(--success);
+      box-shadow: 0 0 6px color-mix(in oklch, var(--success) 40%, transparent);
+    }
+
+    /* Indicator placements */
+    [data-pos="top-left"]      .pos-dot { top: 4px; left: 4px; }
+    [data-pos="top-center"]    .pos-dot { top: 4px; left: 50%; transform: translateX(-50%); }
+    [data-pos="top-right"]     .pos-dot { top: 4px; right: 4px; }
+    [data-pos="bottom-left"]   .pos-dot { bottom: 4px; left: 4px; }
+    [data-pos="bottom-center"] .pos-dot { bottom: 4px; left: 50%; transform: translateX(-50%); }
+    [data-pos="bottom-right"]  .pos-dot { bottom: 4px; right: 4px; }
+
+    .pos-label {
+      font-size: 0.625rem;
+      font-weight: 400;
+      color: var(--text-2);
+      letter-spacing: 0.01em;
+    }
+
+    /* ═══════════════════════════ FOOTER ═══════════════════════════ */
+    .footer {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .footer-text {
+      font-size: 0.625rem;
+      font-weight: 300;
+      color: var(--text-3);
+      letter-spacing: 0.02em;
+    }
+
+    /* ═══════════════════════════ ANIMATIONS ═══════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════ RESPONSIVE ═══════════════════════════ */
+    @media (max-width: 640px) {
+      .wrap { padding: 0 1.25rem; }
+      .hero { padding: 4rem 0 3rem; }
+      .grid-states { grid-template-columns: 1fr 1fr; }
+      .grid-pos { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 400px) {
+      .grid-states { grid-template-columns: 1fr; }
+    }
+
+    /* ═══════════════════════════ REDUCED MOTION ═══════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════ NAV ═══════════════════ -->
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a href="#" class="nav-brand">sileo</a>
+      <div class="nav-right">
+        <button class="btn-clear" onclick="sileo.clear()">clear all</button>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <header class="hero wrap">
+    <h1 class="hero-title">sileo.</h1>
+    <p class="hero-sub">Physics-based toast notifications for the modern web. Zero dependencies, framework-free.</p>
+    <div class="hero-meta">
+      <span>v0.1.0</span>
+      <span class="hero-dot"></span>
+      <span>MIT</span>
+      <span class="hero-dot"></span>
+      <span>0 deps</span>
+      <span class="hero-dot"></span>
+      <span>TypeScript</span>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ MAIN ═══════════════════ -->
+  <main class="wrap">
+
+    <!-- States -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">01</div>
+        <h2 class="section-title">States</h2>
+        <p class="section-desc">Five semantic states with distinct iconography and color.</p>
+      </div>
+      <div class="grid grid-states">
+        <div class="card" data-accent="success" style="--i:0"
+          onclick="sileo.success({ title: 'Success', description: 'Your file has been uploaded.' })">
+          <div class="card-head"><div class="card-dot"></div><span class="card-name">Success</span></div>
+          <p class="card-desc">Confirms a completed operation.</p>
+        </div>
+        <div class="card" data-accent="error" style="--i:1"
+          onclick="sileo.error({ title: 'Error', description: 'Something went wrong.' })">
+          <div class="card-head"><div class="card-dot"></div><span class="card-name">Error</span></div>
+          <p class="card-desc">Signals a failure requiring attention.</p>
+        </div>
+        <div class="card" data-accent="warning" style="--i:2"
+          onclick="sileo.warning({ title: 'Warning', description: 'Disk space running low.' })">
+          <div class="card-head"><div class="card-dot"></div><span class="card-name">Warning</span></div>
+          <p class="card-desc">Caution about potential issues.</p>
+        </div>
+        <div class="card" data-accent="info" style="--i:3"
+          onclick="sileo.info({ title: 'Info', description: 'New version available.' })">
+          <div class="card-head"><div class="card-dot"></div><span class="card-name">Info</span></div>
+          <p class="card-desc">Neutral informational notice.</p>
+        </div>
+        <div class="card" data-accent="action" style="--i:4"
+          onclick="testAction()">
+          <div class="card-head"><div class="card-dot"></div><span class="card-name">Action</span></div>
+          <p class="card-desc">Includes an interactive button.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rich Content -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">02</div>
+        <h2 class="section-title">Rich Content</h2>
+        <p class="section-desc">Pass an HTMLElement for XSS-safe rich content rendering.</p>
+      </div>
+      <div class="grid grid-wide">
+        <div class="card" data-accent="success" style="--i:0" onclick="testRichContent()">
+          <div class="card-head"><div class="card-dot"></div><span class="card-name">HTMLElement</span></div>
+          <p class="card-desc">Structured content with inline formatting, rendered via the DOM API.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Async Flows -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">03</div>
+        <h2 class="section-title">Async Flows</h2>
+        <p class="section-desc">Bind a promise to a toast. Transitions on resolve or reject.</p>
+      </div>
+      <div class="grid grid-wide">
+        <div class="card" style="--i:0" onclick="testPromise()">
+          <div class="card-flow">
+            <span class="tag">loading</span>
+            <span class="arrow">&rarr;</span>
+            <span class="tag">success</span>
+          </div>
+          <div class="card-head"><span class="card-name">Promise Resolve</span></div>
+          <p class="card-desc">Shows loading, then transitions to success after 2&thinsp;s.</p>
+        </div>
+        <div class="card" style="--i:1" onclick="testPromiseError()">
+          <div class="card-flow">
+            <span class="tag">loading</span>
+            <span class="arrow">&rarr;</span>
+            <span class="tag">error</span>
+          </div>
+          <div class="card-head"><span class="card-name">Promise Reject</span></div>
+          <p class="card-desc">Shows loading, then transitions to error after 2&thinsp;s.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Positions -->
+    <section class="section">
+      <div class="section-head">
+        <div class="section-num">04</div>
+        <h2 class="section-title">Positions</h2>
+        <p class="section-desc">Six viewport anchor points. Click to preview.</p>
+      </div>
+      <div class="grid grid-pos">
+        <div class="pos-card" style="--i:0" onclick="sileo.success({ title: 'Top Left', position: 'top-left' })">
+          <div class="pos-screen" data-pos="top-left"><div class="pos-dot"></div></div>
+          <span class="pos-label">top-left</span>
+        </div>
+        <div class="pos-card" style="--i:1" onclick="sileo.success({ title: 'Top Center', position: 'top-center' })">
+          <div class="pos-screen" data-pos="top-center"><div class="pos-dot"></div></div>
+          <span class="pos-label">top-center</span>
+        </div>
+        <div class="pos-card" style="--i:2" onclick="sileo.success({ title: 'Top Right', position: 'top-right' })">
+          <div class="pos-screen" data-pos="top-right"><div class="pos-dot"></div></div>
+          <span class="pos-label">top-right</span>
+        </div>
+        <div class="pos-card" style="--i:3" onclick="sileo.success({ title: 'Bottom Left', position: 'bottom-left' })">
+          <div class="pos-screen" data-pos="bottom-left"><div class="pos-dot"></div></div>
+          <span class="pos-label">bottom-left</span>
+        </div>
+        <div class="pos-card" style="--i:4" onclick="sileo.success({ title: 'Bottom Center', position: 'bottom-center' })">
+          <div class="pos-screen" data-pos="bottom-center"><div class="pos-dot"></div></div>
+          <span class="pos-label">bottom-center</span>
+        </div>
+        <div class="pos-card" style="--i:5" onclick="sileo.success({ title: 'Bottom Right', position: 'bottom-right' })">
+          <div class="pos-screen" data-pos="bottom-right"><div class="pos-dot"></div></div>
+          <span class="pos-label">bottom-right</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="footer wrap">
+    <p class="footer-text">Built with vanilla JavaScript &middot; No dependencies</p>
+  </footer>
+
+  <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+  <script src="https://cdn.jsdelivr.net/gh/hamada147/sileo-vanilla/dist/sileo.iife.js"></script>
+  <script>
+    /* ═══ Theme ═══ */
+    function toggleTheme() {
+      var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('sileo-demo-theme', next);
+    }
+
+    /* ═══ Toast demos ═══ */
+    function testAction() {
+      sileo.action({
+        title: 'Action',
+        description: 'Click the button to navigate.',
+        button: { title: 'Go', onClick: function() { alert('Clicked!'); } }
+      });
+    }
+
+    function testRichContent() {
+      var el = document.createElement('div');
+      var strong = document.createElement('strong');
+      strong.textContent = 'report.pdf';
+      var em = document.createElement('em');
+      em.textContent = '/documents';
+      el.append('Your file ', strong, ' was saved to ', em, '.');
+      sileo.success({ title: 'Uploaded', description: el });
+    }
+
+    function testPromise() {
+      sileo.promise(
+        new Promise(function(resolve) { setTimeout(function() { resolve('data'); }, 2000); }),
+        {
+          loading: { title: 'Uploading\u2026' },
+          success: { title: 'Uploaded', description: 'File saved successfully.' },
+          error:   { title: 'Failed' },
+        }
+      );
+    }
+
+    function testPromiseError() {
+      sileo.promise(
+        new Promise(function(_, reject) { setTimeout(function() { reject(new Error('fail')); }, 2000); }),
+        {
+          loading: { title: 'Processing\u2026' },
+          success: { title: 'Done' },
+          error:   { title: 'Failed', description: 'The operation could not be completed.' },
+        }
+      ).catch(function() {});
+    }
+  </script>
+</body>
+</html>

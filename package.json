@@ -1,0 +1,37 @@
+{
+  "name": "sileo-vanilla",
+  "version": "1.0.0",
+  "description": "An opinionated, physics-based toast notification library. Zero dependencies, framework-free.",
+  "author": "Ahmed Moussa <moussa.ahmed95@gmail.com> (https://github.com/hamada147)",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/sileo.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/sileo.cjs"
+      },
+      "default": "./dist/sileo.cjs"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "main": "./dist/sileo.cjs",
+  "module": "./dist/sileo.mjs",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0",
+    "jsdom": "^26.0.0"
+  }
+}
