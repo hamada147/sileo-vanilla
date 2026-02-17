@@ -101,6 +101,10 @@ export class Toaster implements ToasterLike {
       for (const item of items) {
         const config = this.buildToastConfig(item);
         let instance = this.instances.get(item.id);
+        if (instance && instance.el.parentElement !== viewport) {
+          instance.destroy();
+          instance = undefined;
+        }
         if (instance) {
           instance.update(config);
         } else {

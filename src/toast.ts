@@ -151,6 +151,7 @@ export class SileoToast {
 
   /* --- DOM nodes --- */
   readonly el: HTMLButtonElement;
+  private canvasDiv: HTMLDivElement;
   private svg: SVGSVGElement;
   private pillRect: SVGRectElement;
   private bodyRect: SVGRectElement;
@@ -207,15 +208,15 @@ export class SileoToast {
     /* --- Build DOM --- */
     this.el = this.createRoot();
 
-    const canvasDiv = document.createElement("div");
-    canvasDiv.dataset.sileoCanvas = "";
-    canvasDiv.dataset.edge = this.expand;
+    this.canvasDiv = document.createElement("div");
+    this.canvasDiv.dataset.sileoCanvas = "";
+    this.canvasDiv.dataset.edge = this.expand;
 
     const { svg, pill, body } = this.createSVG();
     this.svg = svg;
     this.pillRect = pill;
     this.bodyRect = body;
-    canvasDiv.append(this.svg);
+    this.canvasDiv.append(this.svg);
 
     const { header, stack, inner, badge, title } = this.createHeader();
     this.headerDiv = header;
@@ -225,7 +226,7 @@ export class SileoToast {
     this.badgeDiv = badge;
     this.titleSpan = title;
 
-    this.el.append(canvasDiv, this.headerDiv);
+    this.el.append(this.canvasDiv, this.headerDiv);
 
     if (this.hasDesc) {
       this.createContentSection();
@@ -705,6 +706,13 @@ export class SileoToast {
     this.onDismiss = config.onDismiss;
     this.canExpand = config.canExpand ?? true;
     this.exiting = config.exiting ?? false;
+    this.position = config.position ?? "left";
+    this.expand = config.expand ?? "bottom";
+    this.el.dataset.position = this.position;
+    this.el.dataset.edge = this.expand;
+    this.canvasDiv.dataset.edge = this.expand;
+    this.headerDiv.dataset.edge = this.expand;
+    if (this.contentDiv) this.contentDiv.dataset.edge = this.expand;
 
     const state = config.state ?? "success";
     const next: View = {

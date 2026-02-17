@@ -90,6 +90,10 @@ var createToast = (options) => {
   const prev = live.find((t) => t.id === id);
   const item = buildSileoItem(merged, id, prev == null ? void 0 : prev.position);
   if (prev) {
+    store.update((p) => p.filter((t) => t.id !== id));
+    store.update(() => []);
+    store.update(() => [item]);
+  } else if (prev) {
     store.update((p) => p.map((t) => t.id === id ? item : t));
   } else {
     store.update((p) => [...p.filter((t) => t.id !== id), item]);
@@ -284,14 +288,14 @@ var SileoToast = class {
     this.headerKey = `${this.view.state}-${this.view.title}`;
     this.frozenExpanded = HEIGHT * MIN_EXPAND_RATIO;
     this.el = this.createRoot();
-    const canvasDiv = document.createElement("div");
-    canvasDiv.dataset.sileoCanvas = "";
-    canvasDiv.dataset.edge = this.expand;
+    this.canvasDiv = document.createElement("div");
+    this.canvasDiv.dataset.sileoCanvas = "";
+    this.canvasDiv.dataset.edge = this.expand;
     const { svg, pill, body } = this.createSVG();
     this.svg = svg;
     this.pillRect = pill;
     this.bodyRect = body;
-    canvasDiv.append(this.svg);
+    this.canvasDiv.append(this.svg);
     const { header, stack, inner, badge, title } = this.createHeader();
     this.headerDiv = header;
     this.headerStack = stack;
@@ -299,7 +303,7 @@ var SileoToast = class {
     this.innerRef = inner;
     this.badgeDiv = badge;
     this.titleSpan = title;
-    this.el.append(canvasDiv, this.headerDiv);
+    this.el.append(this.canvasDiv, this.headerDiv);
     if (this.hasDesc) {
       this.createContentSection();
     }
@@ -691,21 +695,28 @@ var SileoToast = class {
   }
   /* --- Refresh logic --- */
   update(config) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g;
     this.onMouseEnter = config.onMouseEnter;
     this.onMouseLeave = config.onMouseLeave;
     this.onDismiss = config.onDismiss;
     this.canExpand = (_a = config.canExpand) != null ? _a : true;
     this.exiting = (_b = config.exiting) != null ? _b : false;
-    const state = (_c = config.state) != null ? _c : "success";
+    this.position = (_c = config.position) != null ? _c : "left";
+    this.expand = (_d = config.expand) != null ? _d : "bottom";
+    this.el.dataset.position = this.position;
+    this.el.dataset.edge = this.expand;
+    this.canvasDiv.dataset.edge = this.expand;
+    this.headerDiv.dataset.edge = this.expand;
+    if (this.contentDiv) this.contentDiv.dataset.edge = this.expand;
+    const state = (_e = config.state) != null ? _e : "success";
     const next = {
-      title: (_d = config.title) != null ? _d : state,
+      title: (_f = config.title) != null ? _f : state,
       description: config.description,
       state,
       icon: config.icon,
       styles: config.styles,
       button: config.button,
-      fill: (_e = config.fill) != null ? _e : "#FFFFFF"
+      fill: (_g = config.fill) != null ? _g : "#FFFFFF"
     };
     const refreshKey = config.refreshKey;
     if (refreshKey === void 0) {
@@ -824,6 +835,10 @@ var Toaster = class {
       for (const item of items) {
         const config = this.buildToastConfig(item);
         let instance = this.instances.get(item.id);
+        if (instance && instance.el.parentElement !== viewport) {
+          instance.destroy();
+          instance = void 0;
+        }
         if (instance) {
           instance.update(config);
         } else {

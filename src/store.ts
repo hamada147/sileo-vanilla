@@ -125,6 +125,13 @@ export const createToast = (options: InternalSileoOptions) => {
   const item = buildSileoItem(merged, id, prev?.position);
 
   if (prev) {
+    // 1. Close existing notification
+    store.update((p) => p.filter((t) => t.id !== id));
+    // 2. Clear all remaining
+    store.update(() => []);
+    // 3. Create new notification at the new position
+    store.update(() => [item]);
+  } else if (prev) {
     store.update((p) => p.map((t) => (t.id === id ? item : t)));
   } else {
     store.update((p) => [...p.filter((t) => t.id !== id), item]);

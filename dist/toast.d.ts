@@ -50,6 +50,7 @@ export declare class SileoToast {
     private onMouseLeave?;
     private onDismiss?;
     readonly el: HTMLButtonElement;
+    private canvasDiv;
     private svg;
     private pillRect;
     private bodyRect;
