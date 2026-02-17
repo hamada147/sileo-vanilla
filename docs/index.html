@@ -476,7 +476,7 @@
   <!-- ═══════════════════ NAV ═══════════════════ -->
   <nav class="nav">
     <div class="wrap nav-inner">
-      <a href="#" class="nav-brand">sileo</a>
+      <a href="#" class="nav-brand">Sileo</a>
       <div class="nav-right">
         <button class="btn-clear" onclick="sileo.clear()">clear all</button>
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -493,10 +493,10 @@
 
   <!-- ═══════════════════ HERO ═══════════════════ -->
   <header class="hero wrap">
-    <h1 class="hero-title">sileo.</h1>
+    <h1 class="hero-title">Sileo.</h1>
     <p class="hero-sub">Physics-based toast notifications for the modern web. Zero dependencies, framework-free.</p>
     <div class="hero-meta">
-      <span>v0.1.0</span>
+      <span>v1.0.0</span>
       <span class="hero-dot"></span>
       <span>MIT</span>
       <span class="hero-dot"></span>
@@ -597,27 +597,27 @@
         <p class="section-desc">Six viewport anchor points. Click to preview.</p>
       </div>
       <div class="grid grid-pos">
-        <div class="pos-card" style="--i:0" onclick="sileo.success({ title: 'Top Left', position: 'top-left' })">
+        <div class="pos-card" style="--i:0" onclick="sileo.success({ title: 'Top Left', description: 'Top Left', position: 'top-left' })">
           <div class="pos-screen" data-pos="top-left"><div class="pos-dot"></div></div>
           <span class="pos-label">top-left</span>
         </div>
-        <div class="pos-card" style="--i:1" onclick="sileo.success({ title: 'Top Center', position: 'top-center' })">
+        <div class="pos-card" style="--i:1" onclick="sileo.success({ title: 'Top Center', description: 'Top Center', position: 'top-center' })">
           <div class="pos-screen" data-pos="top-center"><div class="pos-dot"></div></div>
           <span class="pos-label">top-center</span>
         </div>
-        <div class="pos-card" style="--i:2" onclick="sileo.success({ title: 'Top Right', position: 'top-right' })">
+        <div class="pos-card" style="--i:2" onclick="sileo.success({ title: 'Top Right', description: 'Top Right', position: 'top-right' })">
           <div class="pos-screen" data-pos="top-right"><div class="pos-dot"></div></div>
           <span class="pos-label">top-right</span>
         </div>
-        <div class="pos-card" style="--i:3" onclick="sileo.success({ title: 'Bottom Left', position: 'bottom-left' })">
+        <div class="pos-card" style="--i:3" onclick="sileo.success({ title: 'Bottom Left', description: 'Bottom Left', position: 'bottom-left' })">
           <div class="pos-screen" data-pos="bottom-left"><div class="pos-dot"></div></div>
           <span class="pos-label">bottom-left</span>
         </div>
-        <div class="pos-card" style="--i:4" onclick="sileo.success({ title: 'Bottom Center', position: 'bottom-center' })">
+        <div class="pos-card" style="--i:4" onclick="sileo.success({ title: 'Bottom Center', description: 'Bottom Center', position: 'bottom-center' })">
           <div class="pos-screen" data-pos="bottom-center"><div class="pos-dot"></div></div>
           <span class="pos-label">bottom-center</span>
         </div>
-        <div class="pos-card" style="--i:5" onclick="sileo.success({ title: 'Bottom Right', position: 'bottom-right' })">
+        <div class="pos-card" style="--i:5" onclick="sileo.success({ title: 'Bottom Right', description: 'Bottom Right', position: 'bottom-right' })">
           <div class="pos-screen" data-pos="bottom-right"><div class="pos-dot"></div></div>
           <span class="pos-label">bottom-right</span>
         </div>
@@ -632,7 +632,7 @@
   </footer>
 
   <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
-  <script src="https://cdn.jsdelivr.net/gh/hamada147/sileo-vanilla/dist/sileo.iife.js"></script>
+  <script src="../dist/sileo.iife.js"></script>
   <script>
     /* ═══ Theme ═══ */
     function toggleTheme() {
