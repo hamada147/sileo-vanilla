@@ -11,16 +11,20 @@ An opinionated, physics-based toast notification library. Zero dependencies, fra
 - Physics-based spring animations with gooey SVG morphing
 - 6 toast states: `success`, `error`, `warning`, `info`, `action`, `loading`
 - 6 viewport positions: `top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center`, `bottom-right`
+- Light/dark mode support (system preference, `data-theme`, `.dark` class)
 - Promise-based async toasts (loading &rarr; success/error)
+- Dynamic state via `sileo.show({ state })` for conditional toast rendering
 - Swipe-to-dismiss gesture
 - Autopilot expand/collapse
+- Scoped `prefers-reduced-motion` (does not affect host page animations)
 - XSS-safe content rendering
 - Full TypeScript support
 - Zero dependencies
 
 ## Installation
 
-### Warning: Haven't been published yet
+> [!WARNING]  
+> Haven't been published yet, can only be used from source using CDN - JSDelivr.
 
 ```bash
 npm install sileo-vanilla
@@ -144,13 +148,13 @@ sileo.action({
 
 ### `sileo.show(options)`
 
-Show a toast with an explicit `state` field.
+Show a toast with an explicit `state` field. Useful when the state is determined dynamically at runtime.
 
 ```js
 sileo.show({
-  title: 'Custom',
-  state: 'info',
-  position: 'bottom-center',
+  state: response.ok ? 'success' : 'error',
+  title: response.ok ? 'Saved' : 'Failed',
+  description: response.message,
 });
 ```
 
@@ -203,14 +207,44 @@ sileo.clear('top-right');   // Clear only top-right toasts
 |---|---|---|---|
 | `title` | `string` | — | Toast headline |
 | `description` | `string \| HTMLElement` | — | Body content (string is auto-escaped; HTMLElement for rich content) |
+| `state` | `SileoState` | — | Toast state (`'success'`, `'error'`, `'warning'`, `'info'`, `'action'`, `'loading'`). Used with `sileo.show()` |
 | `position` | `SileoPosition` | `'top-right'` | Viewport anchor |
 | `duration` | `number \| null` | `6000` | Auto-dismiss delay in ms. `null` = persistent |
 | `icon` | `string \| HTMLElement \| null` | — | Custom icon (null uses default state icon) |
-| `fill` | `string` | `'#FFFFFF'` | Toast background color |
+| `fill` | `string` | `'#FFFFFF'` | Toast background color (light mode) |
+| `darkFill` | `string` | `'#1C1C1E'` | Toast background color (dark mode) |
 | `roundness` | `number` | `18` | Border radius / gooey roundness |
 | `autopilot` | `boolean \| { expand?, collapse? }` | `true` | Auto expand/collapse timing |
 | `button` | `{ title, onClick }` | — | Action button (used with `action` state) |
 | `styles` | `SileoStyles` | — | CSS class overrides for `title`, `description`, `badge`, `button` |
+
+## Dark Mode
+
+Sileo automatically adapts to dark mode. The toast background switches between `fill` (light) and `darkFill` (dark) based on:
+
+- **System preference** via `prefers-color-scheme: dark`
+- **`data-theme="dark"`** attribute on `<html>` (common toggle pattern)
+- **`.dark`** class on any ancestor (Tailwind CSS)
+
+Text color also adapts automatically (dark text on light backgrounds, white text on dark backgrounds).
+
+Override the defaults per-toast or globally via `sileo.init()`:
+
+```js
+// Global defaults
+sileo.init({
+  options: { fill: '#F5F5F5', darkFill: '#2A2A2A' },
+});
+
+// Per-toast override
+sileo.success({
+  title: 'Saved',
+  fill: '#EEFFEE',
+  darkFill: '#1A2E1A',
+});
+```
+
+If your page uses `data-theme="light"` to override a system dark preference, Sileo respects that and stays in light mode.
 
 ## Rich Content (XSS-Safe)
 
