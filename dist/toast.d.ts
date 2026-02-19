@@ -2,6 +2,7 @@ import type { SileoButton, SileoState, SileoStyles } from "./types";
 export interface SileoToastConfig {
     id: string;
     fill?: string;
+    darkFill?: string;
     state?: SileoState;
     title?: string;
     description?: string | HTMLElement;

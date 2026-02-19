@@ -28,6 +28,7 @@ export interface SileoOptions {
     icon?: string | HTMLElement | null;
     styles?: SileoStyles;
     fill?: string;
+    darkFill?: string;
     roundness?: number;
     autopilot?: boolean | {
         expand?: number;

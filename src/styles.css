@@ -141,6 +141,28 @@
 [data-sileo-body] {
 	transform-box: fill-box;
 	transform-origin: 50% 0%;
+	fill: var(--sileo-fill, #FFFFFF);
+}
+
+@media (prefers-color-scheme: dark) {
+	[data-sileo-pill],
+	[data-sileo-body] {
+		fill: var(--sileo-dark-fill, var(--sileo-fill, #FFFFFF));
+	}
+
+	/* Explicit light theme overrides system dark preference */
+	:root[data-theme="light"] [data-sileo-pill],
+	:root[data-theme="light"] [data-sileo-body] {
+		fill: var(--sileo-fill, #FFFFFF);
+	}
+}
+
+/* Explicit dark theme via data attribute or class */
+:root[data-theme="dark"] [data-sileo-pill],
+:root[data-theme="dark"] [data-sileo-body],
+.dark [data-sileo-pill],
+.dark [data-sileo-body] {
+	fill: var(--sileo-dark-fill, var(--sileo-fill, #FFFFFF));
 }
 
 [data-sileo-pill] {

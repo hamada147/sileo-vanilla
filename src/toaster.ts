@@ -193,6 +193,7 @@ export class Toaster implements ToasterLike {
       expand: expandDir(item.position),
       icon: item.icon,
       fill: item.fill,
+      darkFill: item.darkFill,
       styles: item.styles,
       button: item.button,
       roundness: item.roundness,

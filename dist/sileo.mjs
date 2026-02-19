@@ -259,7 +259,7 @@ var SileoToast = class {
     this.contentRafId = 0;
     this.headerPad = null;
     this.abortController = new AbortController();
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i;
     this.id = config.id;
     this.position = (_a = config.position) != null ? _a : "left";
     this.expand = (_b = config.expand) != null ? _b : "bottom";
@@ -283,7 +283,8 @@ var SileoToast = class {
       icon: config.icon,
       styles: config.styles,
       button: config.button,
-      fill: (_h = config.fill) != null ? _h : "#FFFFFF"
+      fill: (_h = config.fill) != null ? _h : "#FFFFFF",
+      darkFill: (_i = config.darkFill) != null ? _i : "#1C1C1E"
     };
     this.headerKey = `${this.view.state}-${this.view.title}`;
     this.frozenExpanded = HEIGHT * MIN_EXPAND_RATIO;
@@ -361,7 +362,6 @@ var SileoToast = class {
       ry: this.roundness
     });
     pill.dataset.sileoPill = "";
-    pill.setAttribute("fill", this.view.fill);
     const body = createSvgElement("rect", {
       y: HEIGHT,
       width: WIDTH,
@@ -370,7 +370,6 @@ var SileoToast = class {
       ry: this.roundness
     });
     body.dataset.sileoBody = "";
-    body.setAttribute("fill", this.view.fill);
     g.append(pill, body);
     svg.append(titleEl, g);
     return { svg, pill, body };
@@ -457,12 +456,12 @@ var SileoToast = class {
       `translateY(${this.open ? this.expand === "bottom" ? 3 : -3 : 0}px) scale(${this.open ? 0.9 : 1})`
     );
     s.setProperty("--_co", `${this.open ? 1 : 0}`);
+    s.setProperty("--sileo-fill", this.view.fill);
+    s.setProperty("--sileo-dark-fill", this.view.darkFill);
     this.svg.setAttribute("height", String(svgHeight));
     this.svg.setAttribute("viewBox", `0 0 ${WIDTH} ${svgHeight}`);
     this.pillRect.setAttribute("x", String(pillX));
-    this.pillRect.setAttribute("fill", this.view.fill);
     this.bodyRect.setAttribute("height", String(expandedContent));
-    this.bodyRect.setAttribute("fill", this.view.fill);
     this.el.dataset.expanded = String(this.open);
     this.el.dataset.exiting = String(this.exiting);
     this.el.dataset.state = this.view.state;
@@ -695,7 +694,7 @@ var SileoToast = class {
   }
   /* --- Refresh logic --- */
   update(config) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     this.onMouseEnter = config.onMouseEnter;
     this.onMouseLeave = config.onMouseLeave;
     this.onDismiss = config.onDismiss;
@@ -716,7 +715,8 @@ var SileoToast = class {
       icon: config.icon,
       styles: config.styles,
       button: config.button,
-      fill: (_g = config.fill) != null ? _g : "#FFFFFF"
+      fill: (_g = config.fill) != null ? _g : "#FFFFFF",
+      darkFill: (_h = config.darkFill) != null ? _h : "#1C1C1E"
     };
     const refreshKey = config.refreshKey;
     if (refreshKey === void 0) {
@@ -906,6 +906,7 @@ var Toaster = class {
       expand: expandDir(item.position),
       icon: item.icon,
       fill: item.fill,
+      darkFill: item.darkFill,
       styles: item.styles,
       button: item.button,
       roundness: item.roundness,

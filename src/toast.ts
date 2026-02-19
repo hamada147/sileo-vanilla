@@ -27,11 +27,13 @@ interface View {
   styles?: SileoStyles;
   button?: SileoButton;
   fill: string;
+  darkFill: string;
 }
 
 export interface SileoToastConfig {
   id: string;
   fill?: string;
+  darkFill?: string;
   state?: SileoState;
   title?: string;
   description?: string | HTMLElement;
@@ -200,6 +202,7 @@ export class SileoToast {
       styles: config.styles,
       button: config.button,
       fill: config.fill ?? "#FFFFFF",
+      darkFill: config.darkFill ?? "#1C1C1E",
     };
 
     this.headerKey = `${this.view.state}-${this.view.title}`;
@@ -300,7 +303,6 @@ export class SileoToast {
       ry: this.roundness,
     });
     pill.dataset.sileoPill = "";
-    pill.setAttribute("fill", this.view.fill);
 
     const body = createSvgElement("rect", {
       y: HEIGHT,
@@ -310,7 +312,6 @@ export class SileoToast {
       ry: this.roundness,
     });
     body.dataset.sileoBody = "";
-    body.setAttribute("fill", this.view.fill);
 
     g.append(pill, body);
     svg.append(titleEl, g);
@@ -422,12 +423,13 @@ export class SileoToast {
     );
     s.setProperty("--_co", `${this.open ? 1 : 0}`);
 
+    s.setProperty("--sileo-fill", this.view.fill);
+    s.setProperty("--sileo-dark-fill", this.view.darkFill);
+
     this.svg.setAttribute("height", String(svgHeight));
     this.svg.setAttribute("viewBox", `0 0 ${WIDTH} ${svgHeight}`);
     this.pillRect.setAttribute("x", String(pillX));
-    this.pillRect.setAttribute("fill", this.view.fill);
     this.bodyRect.setAttribute("height", String(expandedContent));
-    this.bodyRect.setAttribute("fill", this.view.fill);
 
     this.el.dataset.expanded = String(this.open);
     this.el.dataset.exiting = String(this.exiting);
@@ -723,6 +725,7 @@ export class SileoToast {
       styles: config.styles,
       button: config.button,
       fill: config.fill ?? "#FFFFFF",
+      darkFill: config.darkFill ?? "#1C1C1E",
     };
 
     const refreshKey = config.refreshKey;
