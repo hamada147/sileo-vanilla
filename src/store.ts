@@ -1,23 +1,15 @@
-import type { SileoOptions, SileoPosition, SileoState } from "./types";
-
-/* -------------------------------- Constants ------------------------------- */
-
-export const DEFAULT_DURATION = 6000;
-export const EXIT_DURATION = DEFAULT_DURATION * 0.1;
-const AUTO_EXPAND_DELAY = DEFAULT_DURATION * 0.025;
-const AUTO_COLLAPSE_DELAY = (DEFAULT_DURATION * 2) / 3;
-
-export const pillAlign = (pos: SileoPosition): "left" | "center" | "right" =>
-  pos.includes("right") ? "right" : pos.includes("center") ? "center" : "left";
-
-export const expandDir = (pos: SileoPosition) =>
-  pos.startsWith("top") ? ("bottom" as const) : ("top" as const);
+import type { SileoOptions, SileoPosition } from "./types";
+import {
+  DEFAULT_DURATION,
+  EXIT_DURATION,
+  AUTO_EXPAND_DELAY,
+  AUTO_COLLAPSE_DELAY,
+} from "./constants";
 
 /* ---------------------------------- Types --------------------------------- */
 
 export interface InternalSileoOptions extends SileoOptions {
   id?: string;
-  state?: SileoState;
 }
 
 export interface SileoItem extends InternalSileoOptions {
@@ -27,7 +19,6 @@ export interface SileoItem extends InternalSileoOptions {
   autoExpandDelayMs?: number;
   autoCollapseDelayMs?: number;
   position: SileoPosition;
-  state?: SileoState;
 }
 
 export type SileoOffsetValue = number | string;

@@ -1,11 +1,6 @@
-import type { SileoOptions, SileoPosition, SileoState } from "./types";
-export declare const DEFAULT_DURATION = 6000;
-export declare const EXIT_DURATION: number;
-export declare const pillAlign: (pos: SileoPosition) => "left" | "center" | "right";
-export declare const expandDir: (pos: SileoPosition) => "top" | "bottom";
+import type { SileoOptions, SileoPosition } from "./types";
 export interface InternalSileoOptions extends SileoOptions {
     id?: string;
-    state?: SileoState;
 }
 export interface SileoItem extends InternalSileoOptions {
     id: string;
@@ -14,7 +9,6 @@ export interface SileoItem extends InternalSileoOptions {
     autoExpandDelayMs?: number;
     autoCollapseDelayMs?: number;
     position: SileoPosition;
-    state?: SileoState;
 }
 export type SileoOffsetValue = number | string;
 export type SileoOffsetConfig = Partial<Record<"top" | "right" | "bottom" | "left", SileoOffsetValue>>;

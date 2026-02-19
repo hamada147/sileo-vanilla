@@ -1,19 +1,18 @@
 import type { SileoButton, SileoState, SileoStyles } from "./types";
 import { STATE_ICONS } from "./icons";
 import { getFilterId } from "./gooey";
-
-/* --------------------------------- Config --------------------------------- */
-
-const HEIGHT = 40;
-const WIDTH = 350;
-const DEFAULT_ROUNDNESS = 18;
-const BLUR_RATIO = 0.5;
-const PILL_PADDING = 10;
-const MIN_EXPAND_RATIO = 2.25;
-const SWAP_COLLAPSE_MS = 200;
-const HEADER_EXIT_MS = 150;
-const SWIPE_DISMISS = 30;
-const SWIPE_MAX = 20;
+import {
+  HEIGHT,
+  WIDTH,
+  DEFAULT_ROUNDNESS,
+  BLUR_RATIO,
+  PILL_PADDING,
+  MIN_EXPAND_RATIO,
+  SWAP_COLLAPSE_MS,
+  HEADER_EXIT_MS,
+  SWIPE_DISMISS,
+  SWIPE_MAX,
+} from "./constants";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 

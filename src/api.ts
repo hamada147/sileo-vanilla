@@ -29,7 +29,7 @@ export const sileo = {
     store.toaster = toaster;
   },
 
-  show: (opts: SileoOptions) => { ensureInit(); return createToast(opts).id; },
+  show: (opts: SileoOptions) => { ensureInit(); return createToast({ ...opts, state: opts.state ?? "success" }).id; },
   success: (opts: SileoOptions) => { ensureInit(); return createToast({ ...opts, state: "success" }).id; },
   error: (opts: SileoOptions) => { ensureInit(); return createToast({ ...opts, state: "error" }).id; },
   warning: (opts: SileoOptions) => { ensureInit(); return createToast({ ...opts, state: "warning" }).id; },

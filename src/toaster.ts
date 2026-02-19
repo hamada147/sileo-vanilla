@@ -3,14 +3,16 @@ import {
   type SileoPosition,
 } from "./types";
 import {
+  DEFAULT_DURATION,
+  pillAlign,
+  expandDir,
+} from "./constants";
+import {
   type SileoItem,
   type SileoOffsetConfig,
   type SileoOffsetValue,
   type ToasterLike,
-  DEFAULT_DURATION,
   dismissToast,
-  pillAlign,
-  expandDir,
   timeoutKey,
 } from "./store";
 import { SileoToast } from "./toast";

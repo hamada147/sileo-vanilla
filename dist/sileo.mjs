@@ -18,13 +18,26 @@ var __spreadValues = (a, b) => {
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 
-// src/store.ts
+// src/constants.ts
+var HEIGHT = 40;
+var WIDTH = 350;
+var DEFAULT_ROUNDNESS = 18;
+var BLUR_RATIO = 0.5;
+var PILL_PADDING = 10;
+var MIN_EXPAND_RATIO = 2.25;
+var DURATION_MS = 600;
 var DEFAULT_DURATION = 6e3;
 var EXIT_DURATION = DEFAULT_DURATION * 0.1;
 var AUTO_EXPAND_DELAY = DEFAULT_DURATION * 0.025;
-var AUTO_COLLAPSE_DELAY = DEFAULT_DURATION * 2 / 3;
+var AUTO_COLLAPSE_DELAY = DEFAULT_DURATION - 2e3;
+var SWAP_COLLAPSE_MS = 200;
+var HEADER_EXIT_MS = DURATION_MS * 0.7;
+var SWIPE_DISMISS = 30;
+var SWIPE_MAX = 20;
 var pillAlign = (pos) => pos.includes("right") ? "right" : pos.includes("center") ? "center" : "left";
 var expandDir = (pos) => pos.startsWith("top") ? "bottom" : "top";
+
+// src/store.ts
 var store = {
   toasts: [],
   toaster: null,
@@ -193,16 +206,6 @@ function getFilterId(blur) {
 }
 
 // src/toast.ts
-var HEIGHT = 40;
-var WIDTH = 350;
-var DEFAULT_ROUNDNESS = 18;
-var BLUR_RATIO = 0.5;
-var PILL_PADDING = 10;
-var MIN_EXPAND_RATIO = 2.25;
-var SWAP_COLLAPSE_MS = 200;
-var HEADER_EXIT_MS = 150;
-var SWIPE_DISMISS = 30;
-var SWIPE_MAX = 20;
 var SVG_NS2 = "http://www.w3.org/2000/svg";
 function createSvgElement(tag, attrs = {}) {
   const el = document.createElementNS(SVG_NS2, tag);
@@ -966,8 +969,9 @@ var sileo = {
     store.toaster = toaster;
   },
   show: (opts) => {
+    var _a;
     ensureInit();
-    return createToast(opts).id;
+    return createToast(__spreadProps(__spreadValues({}, opts), { state: (_a = opts.state) != null ? _a : "success" })).id;
   },
   success: (opts) => {
     ensureInit();
