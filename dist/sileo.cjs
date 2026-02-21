@@ -499,9 +499,11 @@ var SileoToast = class {
   setupResizeObservers() {
     const measureHeader = () => {
       if (!this.innerRef || !this.headerDiv) return;
-      if (this.headerPad === null) {
+      if (this.headerPad === null || Number.isNaN(this.headerPad)) {
         const cs = getComputedStyle(this.headerDiv);
-        this.headerPad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        const pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        if (Number.isNaN(pad)) return;
+        this.headerPad = pad;
       }
       const w = this.innerRef.scrollWidth + this.headerPad + PILL_PADDING;
       if (w > PILL_PADDING && w !== this.pillWidth) {
@@ -666,9 +668,11 @@ var SileoToast = class {
     this.headerPad = null;
     if (this.headerRO) this.headerRO.disconnect();
     const measureHeader = () => {
-      if (this.headerPad === null) {
+      if (this.headerPad === null || Number.isNaN(this.headerPad)) {
         const cs = getComputedStyle(this.headerDiv);
-        this.headerPad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        const pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+        if (Number.isNaN(pad)) return;
+        this.headerPad = pad;
       }
       const w = this.innerRef.scrollWidth + this.headerPad + PILL_PADDING;
       if (w > PILL_PADDING && w !== this.pillWidth) {
